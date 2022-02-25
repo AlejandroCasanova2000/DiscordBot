@@ -1,32 +1,27 @@
 package DiscordPlayer;
 
 import Queue.Queue;
+import Queue.Node;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
-import com.sedmelluq.discord.lavaplayer.player.event.TrackEndEvent;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
-
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.EventListener;
+import discord4j.core.event.domain.message.MessageCreateEvent;
 
 public class TrackScheduler implements AudioLoadResultHandler {
     private final AudioPlayer player;
     private Queue<AudioTrack> scheduledList;
+    private MessageCreateEvent event;
 
     public TrackScheduler(final AudioPlayer player) {
         this.player = player;
         player.addListener(new AudioEventAdapter() {
             @Override
             public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-                trackLoaded(scheduledList.pop());
+                trackLoaded(null);
             }
         });
         this.scheduledList = new Queue<AudioTrack>();
@@ -37,16 +32,16 @@ public class TrackScheduler implements AudioLoadResultHandler {
         System.out.println(track);
         // LavaPlayer found an audio source for us to play
         if (player.getPlayingTrack() == null) {
-            scheduledList.push(track);
-            player.playTrack(scheduledList.pop());
+            if(track != null) scheduledList.push(track);
+            AudioTrack nowPlaying = scheduledList.pop();
+            event.getMessage().getChannel().block()
+                    .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
+                    .block();
+            player.playTrack(nowPlaying);
         } else {
             System.out.println("added to queue");
             scheduledList.push(track);
         }
-    }
-
-    public void skip() {
-        player.getPlayingTrack().setPosition(player.getPlayingTrack().getDuration());
     }
 
     @Override
@@ -62,5 +57,32 @@ public class TrackScheduler implements AudioLoadResultHandler {
     @Override
     public void loadFailed(final FriendlyException exception) {
         // LavaPlayer could not parse an audio source for some reason
+    }
+
+    public MessageCreateEvent getEvent() {
+        return event;
+    }
+
+    public void setEvent(MessageCreateEvent event) {
+        this.event = event;
+    }
+
+    public void skip() {
+        player.stopTrack();
+    }
+
+    public void showQueue() {
+        StringBuilder sb = new StringBuilder();
+        Node<AudioTrack> puntero = scheduledList.getFirstNode();
+        sb.append("**Items left in Queue**\n");
+        for(int i = 0; i < scheduledList.getSize(); i++) {
+            sb.append((i + 1) + ")  ---> " + puntero.getContent().getInfo().title + "\n");
+            puntero = puntero.getNext();
+        }
+        event.getMessage().getChannel().block().createMessage(sb.toString()).block();
+    }
+
+    public void clearQueue() {
+        scheduledList = new Queue<AudioTrack>();
     }
 }

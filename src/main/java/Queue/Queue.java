@@ -1,11 +1,14 @@
 package Queue;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+
 public class Queue<T> {
     private Node<T> firstNode;
     private int size;
 
     public Queue() {
         this.firstNode = null;
+        this.size = 0;
     }
 
     public Node<T> getFirstNode() {
@@ -55,5 +58,14 @@ public class Queue<T> {
             size--;
             return aux.getContent();
         }
+    }
+
+    public T read(int index) {
+        Node<T> puntero = this.getFirstNode();
+        for(int i = 0; i < this.getSize(); i++) {
+            if(i == index) return puntero.getContent();
+            puntero = puntero.getNext();
+        }
+        return null;
     }
 }
