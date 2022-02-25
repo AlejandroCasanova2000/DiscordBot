@@ -60,15 +60,21 @@ public class Main {
         });
         final TrackScheduler scheduler = new TrackScheduler(player);
         commands.put("play", event -> {
-            System.out.println("playin " + event.getMessage().getContent());
             final String content = event.getMessage().getContent().toString();
             final List<String> command = Arrays.asList(content.split(" "));
             System.out.println(command.get(1).toString());
+            scheduler.setEvent(event);
             playerManager.loadItem(command.get(1), scheduler);
 
         });
         commands.put("skip", event -> {
             scheduler.skip();
+        });
+        commands.put("queue", event -> {
+            scheduler.showQueue();
+        });
+        commands.put("clear", event -> {
+           scheduler.clearQueue();
         });
         final GatewayDiscordClient client = DiscordClientBuilder.create("ODkzNTI4NDk2ODQyODkxMjY0.YVcxQg.EXtrzU6MjcsFVVyhv6ZUOZNMv9E").build().login().block();
         client.getEventDispatcher().on(MessageCreateEvent.class)
