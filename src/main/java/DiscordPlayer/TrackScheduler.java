@@ -26,7 +26,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
         player.addListener(new AudioEventAdapter() {
             @Override
             public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-                skip();
+                trackLoaded(scheduledList.pop());
             }
         });
         this.scheduledList = new Queue<AudioTrack>();
@@ -34,6 +34,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
 
     @Override
     public void trackLoaded(final AudioTrack track) {
+        System.out.println(track);
         // LavaPlayer found an audio source for us to play
         if (player.getPlayingTrack() == null) {
             scheduledList.push(track);
@@ -45,8 +46,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
     }
 
     public void skip() {
-        player.stopTrack();
-        player.playTrack(scheduledList.pop());
+        player.getPlayingTrack().setPosition(player.getPlayingTrack().getDuration());
     }
 
     @Override
