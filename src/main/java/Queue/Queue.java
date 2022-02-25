@@ -27,11 +27,11 @@ public class Queue<T> {
     public void push(T object) {
         if (size == 0) {
             firstNode = new Node<T>(object);
-        } else if(size == 1) {
+        } else if (size == 1) {
             firstNode.setNext(new Node<T>(object));
         } else {
             Node<T> puntero = firstNode;
-            for(int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {
                 if (i == size - 1) {
                     puntero.setNext(new Node<T>(object));
                     break;
@@ -44,7 +44,7 @@ public class Queue<T> {
     }
 
     public T pop() {
-        if(size > 1) {
+        if (size > 1) {
             Node<T> aux = firstNode;
             firstNode = firstNode.getNext();
             size--;

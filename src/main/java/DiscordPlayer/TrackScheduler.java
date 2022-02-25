@@ -3,9 +3,14 @@ package DiscordPlayer;
 import Queue.Queue;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
+import com.sedmelluq.discord.lavaplayer.player.event.TrackEndEvent;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 
 import java.sql.SQLOutput;
@@ -18,12 +23,19 @@ public class TrackScheduler implements AudioLoadResultHandler {
 
     public TrackScheduler(final AudioPlayer player) {
         this.player = player;
+        player.addListener(new AudioEventAdapter() {
+            @Override
+            public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+                skip();
+            }
+        });
         this.scheduledList = new Queue<AudioTrack>();
     }
+
     @Override
     public void trackLoaded(final AudioTrack track) {
         // LavaPlayer found an audio source for us to play
-        if (player.getPlayingTrack() == null){
+        if (player.getPlayingTrack() == null) {
             scheduledList.push(track);
             player.playTrack(scheduledList.pop());
         } else {
