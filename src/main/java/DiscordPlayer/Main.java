@@ -3,6 +3,7 @@ package DiscordPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.event.TrackEndEvent;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
 import discord4j.core.DiscordClient;
@@ -52,7 +53,7 @@ public class Main {
                     if (channel != null) {
                         // join returns a VoiceConnection which would be required if we were
                         // adding disconnection features, but for now we are just ignoring it.
-                        channel.join(spec ->  spec.setProvider(provider)).block();
+                        channel.join(spec -> spec.setProvider(provider)).block();
                     }
                 }
             }
