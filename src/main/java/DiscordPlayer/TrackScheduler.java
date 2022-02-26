@@ -37,9 +37,13 @@ public class TrackScheduler implements AudioLoadResultHandler {
             event.getMessage().getChannel().block()
                     .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
                     .block();
-            player.playTrack(nowPlaying);
+            if(nowPlaying != null) player.playTrack(nowPlaying);
         } else {
             System.out.println("added to queue");
+            event.getMessage().getChannel().block()
+                    .createMessage("**" + track.getInfo().title + "--> Addeded to Queue in "
+                            + (scheduledList.getSize() + 1) + "º position")
+                    .block();
             scheduledList.push(track);
         }
     }
@@ -72,14 +76,18 @@ public class TrackScheduler implements AudioLoadResultHandler {
     }
 
     public void showQueue() {
-        StringBuilder sb = new StringBuilder();
-        Node<AudioTrack> puntero = scheduledList.getFirstNode();
-        sb.append("**Items left in Queue**\n");
-        for(int i = 0; i < scheduledList.getSize(); i++) {
-            sb.append((i + 1) + ")  ---> " + puntero.getContent().getInfo().title + "\n");
-            puntero = puntero.getNext();
+        if(scheduledList.getSize() == 0) {
+            event.getMessage().getChannel().block().createMessage("**There are not Items in Queue**").block();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            Node<AudioTrack> puntero = scheduledList.getFirstNode();
+            sb.append("**Items left in Queue**\n");
+            for(int i = 0; i < scheduledList.getSize(); i++) {
+                sb.append((i + 1) + ")  ---> " + puntero.getContent().getInfo().title + "\n");
+                puntero = puntero.getNext();
+            }
+            event.getMessage().getChannel().block().createMessage(sb.toString()).block();
         }
-        event.getMessage().getChannel().block().createMessage(sb.toString()).block();
     }
 
     public void clearQueue() {
