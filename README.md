@@ -35,7 +35,8 @@ All commands begin with a prefix (in properties file), which will not be shown w
 
 * `clear` - Clear the queue
 
-## Creating .exe File to execute the bot
+## Creating .exe File to execute the bot (May not Work in the release)
 For creating the .exe file (make sure the bot works fine by testing first in your IDE), you have to do a Maven install command. In IntelliJ for example, you have to go to the right contextual Maven menu, go to lifeCycle, intall. This step will create a target folder with the bot.exe file.
 For stopping the bot, you have to go to your task manager and kill Java Platform SE Binary process.
+If this feature doesn't work, just wait for this to be solved in following releases, you can still using the bot by executing it in your IDE.
     
