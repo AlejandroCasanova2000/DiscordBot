@@ -31,7 +31,7 @@ public class Main {
         InputStream input = new FileInputStream("application.properties");
         Properties properties = new Properties();
         properties.load(input);
-        String discordToken = properties.getProperty("discordToken");
+        String discordToken = properties.getProperty("discordBotToken");
         String prefix = properties.getProperty("prefix");
         // Creates AudioPlayer instances and translates URLs to AudioTrack instances
 
