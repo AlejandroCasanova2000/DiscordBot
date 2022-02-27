@@ -13,6 +13,8 @@ The properties file needs to have the following properties:
 * youtubeToken=YoutGoogleApiKeys
 * prefix=desiredPrefix(example: prefix=!)
 
+Don't forget to invite the bot to your channel, you can do this in Discord Developer Portal -> Your Application -> Oauth2
+
 ## Commands
 
 This Bot contains some commands, most of which should be quite intuitive to the user.
@@ -32,4 +34,8 @@ All commands begin with a prefix (in properties file), which will not be shown w
 * `skip` - If a song is playing, the bot will skip it and play the next song in the queue.
 
 * `clear` - Clear the queue
+
+## Creating .exe File to execute the bot
+For creating the .exe file (make sure the bot works fine by testing first in your IDE), you have to do a Maven install command. In IntelliJ for example, you have to go to the right contextual Maven menu, go to lifeCycle, intall. This step will create a target folder with the bot.exe file.
+For stopping the bot, you have to go to your task manager and kill Java Platform SE Binary process.
     
