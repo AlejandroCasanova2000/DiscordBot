@@ -32,6 +32,7 @@ public class Main {
         Properties properties = new Properties();
         properties.load(input);
         String discordToken = properties.getProperty("discordToken");
+        String prefix = properties.getProperty("prefix");
         // Creates AudioPlayer instances and translates URLs to AudioTrack instances
 
 // This is an optimization strategy that Discord4J can utilize.
@@ -70,7 +71,7 @@ public class Main {
                     String[] contentSplitted = content.split(" ");
                     for (final Map.Entry<String, Command> entry : commands.entrySet()) {
                         // We will be using ! as our "prefix" to any command in the system.
-                        if (contentSplitted[0].startsWith('!' + entry.getKey())) {
+                        if (contentSplitted[0].startsWith(prefix + entry.getKey())) {
                             System.out.println(event.getMessage().getContent());
                             try {
                                 entry.getValue().execute(event);
@@ -115,5 +116,9 @@ public class Main {
             scheduler.clearQueue();
         });
         commands.put("ping", event -> event.getMessage().getChannel().block().createMessage("Pong!").block());
+        commands.put("pause", event -> {
+            scheduler.setEvent(event);
+            scheduler.pause();
+        });
     }
 }

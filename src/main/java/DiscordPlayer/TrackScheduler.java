@@ -93,4 +93,15 @@ public class TrackScheduler implements AudioLoadResultHandler {
     public void clearQueue() {
         scheduledList = new Queue<AudioTrack>();
     }
+
+    public void pause() {
+        if (!player.isPaused()) {
+            event.getMessage().getChannel().block().createMessage("**Paused**").block();
+            player.setPaused(true);
+        }
+        else {
+            event.getMessage().getChannel().block().createMessage("**Resumed**").block();
+            player.setPaused(false);
+        }
+    }
 }

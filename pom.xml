@@ -113,12 +113,12 @@
                                 <fileVersion>1.0.0.0</fileVersion>
                                 <txtFileVersion>${project.version}</txtFileVersion>
                                 <fileDescription>${project.name}</fileDescription>
-                                <copyright>2012 howtodoinjava.com</copyright>
+                                <copyright>AlejandroCasanova2022</copyright>
                                 <productVersion>1.0.0.0</productVersion>
                                 <txtProductVersion>1.0.0.0</txtProductVersion>
                                 <productName>${project.name}</productName>
-                                <companyName>howtodoinjava.com</companyName>
-                                <internalName>ElBotFacha</internalName>
+                                <companyName>AlejandroCasanova2022</companyName>
+                                <internalName>DiscordBot</internalName>
                                 <originalFilename>bot.exe</originalFilename>
                             </versionInfo>
                         </configuration>
