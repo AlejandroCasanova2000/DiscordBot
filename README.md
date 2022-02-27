@@ -7,9 +7,8 @@ This project is a bot for Discord, written using Java, the [Discord4J](https://g
 This Bot is designed package in a .exe file, to start one Discord bot. 
 
 ## Installation
-Firs Download the code and add it to your Java IDE. Next you have to create a Discord application in https://discord.com/developers/applications, and get
-a youtube API token for YouTube data in https://console.cloud.google.com/apis/library/youtube.googleapis.com.
-Next step is creating an aplication.properties file in the root folder of the project. The properties file needs to have the following properties:
+Firs Download the code and add it to your Java IDE. Next you have to create a Discord application in https://discord.com/developers/applications, and get a youtube API token for YouTube data in https://console.cloud.google.com/apis/library/youtube.googleapis.com.Next step is creating an aplication.properties file in the root folder of the project. 
+The properties file needs to have the following properties:
 * discordToken=yourDiscordToken
 * youtubeToken=YoutGoogleApiKeys
 * prefix=desiredPrefix(example: prefix=!)
