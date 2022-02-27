@@ -29,7 +29,7 @@ All commands begin with a prefix (in properties file), which will not be shown w
 
 * `ping` - This command is for testing the bot. When you type this command, the bot answer. !ping  BOT: Pong!
 
-* `skip`* - If a song is playing, the bot will skip it and play the next song in the queue.
+* `skip` - If a song is playing, the bot will skip it and play the next song in the queue.
 
 * `clear` - Clear the queue
     
