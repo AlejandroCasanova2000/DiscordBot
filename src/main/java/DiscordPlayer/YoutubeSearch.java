@@ -15,6 +15,7 @@ import com.google.api.services.youtube.model.Thumbnail;
 import java.io.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 public class YoutubeSearch {
 
@@ -25,7 +26,11 @@ public class YoutubeSearch {
      * display the name and thumbnail image of each video in the result set.
      *
      */
-    public static SearchResult getVideoInfo(String queryTerm) {
+    public static SearchResult getVideoInfo(String queryTerm) throws IOException {
+        InputStream input = new FileInputStream("application.properties");
+        Properties properties = new Properties();
+        properties.load(input);
+        String youtubeToken = properties.getProperty("youtubeToken");
         // Read the developer key from the properties file.
         try {
             // This object is used to make YouTube Data API requests. The last
@@ -47,8 +52,7 @@ public class YoutubeSearch {
             // Set your developer key from the {{ Google Cloud Console }} for
             // non-authenticated requests. See:
             // {{ https://cloud.google.com/console }}
-            String apiKey = "AIzaSyBPQw1uODTDFB0wfkwhoiGMloWFfwW7Rhs";
-            search.setKey(apiKey);
+            search.setKey(youtubeToken);
             search.setQ(queryTerm);
 
             // Restrict the search results to only include videos. See:

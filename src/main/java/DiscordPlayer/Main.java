@@ -14,6 +14,10 @@ import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.voice.AudioProvider;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public class Main {
@@ -23,7 +27,11 @@ public class Main {
     static final TrackScheduler scheduler = new TrackScheduler(player);
     static final AudioProvider provider = new LavaPlayerAudioProvider(player);
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
+        InputStream input = new FileInputStream("application.properties");
+        Properties properties = new Properties();
+        properties.load(input);
+        String discordToken = properties.getProperty("discordToken");
         // Creates AudioPlayer instances and translates URLs to AudioTrack instances
 
 // This is an optimization strategy that Discord4J can utilize.
@@ -51,7 +59,7 @@ public class Main {
             }
         });
 
-        final GatewayDiscordClient client = DiscordClientBuilder.create("ODkzNTI4NDk2ODQyODkxMjY0.YVcxQg.EXtrzU6MjcsFVVyhv6ZUOZNMv9E").build().login().block();
+        final GatewayDiscordClient client = DiscordClientBuilder.create(discordToken).build().login().block();
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 // subscribe is like block, in that it will *request* for action
                 // to be done, but instead of blocking the thread, waiting for it
@@ -64,7 +72,11 @@ public class Main {
                         // We will be using ! as our "prefix" to any command in the system.
                         if (contentSplitted[0].startsWith('!' + entry.getKey())) {
                             System.out.println(event.getMessage().getContent());
-                            entry.getValue().execute(event);
+                            try {
+                                entry.getValue().execute(event);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             break;
                         }
                     }
