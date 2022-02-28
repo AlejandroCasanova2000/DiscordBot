@@ -40,14 +40,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
             if (track != null) scheduledList.push(track);
             AudioTrack nowPlaying = scheduledList.pop();
             if (nowPlaying != null) {
-                try {
-                    event.getMessage().getChannel().block()
-                            .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
-                            .block();
-                    channel = event.getMessage().getChannel().block();
-                } catch (IllegalStateException e) {
-                    channel.createMessage("**Now Playing -> **" + nowPlaying.getInfo().title).subscribe();
-                }
+                sendMessage("**Now Playing -> **" + nowPlaying.getInfo().title);
                 System.out.println("reproducimos");
                 player.playTrack(nowPlaying);
             } else {
@@ -97,7 +90,21 @@ public class TrackScheduler implements AudioLoadResultHandler {
     }
 
     public void skip() {
-        player.stopTrack();
+        if (scheduledList.getSize() > 0) player.stopTrack();
+        else {
+            sendMessage("**No Songs in Queue**");
+        }
+    }
+
+    private void sendMessage(String message) {
+        try {
+            event.getMessage().getChannel().block()
+                    .createMessage(message)
+                    .block();
+            channel = event.getMessage().getChannel().block();
+        } catch (IllegalStateException e) {
+            channel.createMessage(message).subscribe();
+        }
     }
 
     public void showQueue() {
