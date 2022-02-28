@@ -15,6 +15,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
     private final AudioPlayer player;
     private Queue<AudioTrack> scheduledList;
     private MessageCreateEvent event;
+    private boolean isFromPlaylist;
 
     public TrackScheduler(final AudioPlayer player) {
         this.player = player;
@@ -25,6 +26,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
             }
         });
         this.scheduledList = new Queue<AudioTrack>();
+        this.isFromPlaylist = false;
     }
 
     @Override
@@ -34,13 +36,13 @@ public class TrackScheduler implements AudioLoadResultHandler {
         if (player.getPlayingTrack() == null) {
             if(track != null) scheduledList.push(track);
             AudioTrack nowPlaying = scheduledList.pop();
-            event.getMessage().getChannel().block()
+            if (!isFromPlaylist()) event.getMessage().getChannel().block()
                     .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
                     .block();
             if(nowPlaying != null) player.playTrack(nowPlaying);
         } else {
             System.out.println("added to queue");
-            event.getMessage().getChannel().block()
+            if(!isFromPlaylist()) event.getMessage().getChannel().block()
                     .createMessage("**" + track.getInfo().title + "--> Addeded to Queue in "
                             + (scheduledList.getSize() + 1) + "º position")
                     .block();
@@ -61,6 +63,14 @@ public class TrackScheduler implements AudioLoadResultHandler {
     @Override
     public void loadFailed(final FriendlyException exception) {
         // LavaPlayer could not parse an audio source for some reason
+    }
+
+    public boolean isFromPlaylist() {
+        return isFromPlaylist;
+    }
+
+    public void setFromPlaylist(boolean fromPlaylist) {
+        isFromPlaylist = fromPlaylist;
     }
 
     public MessageCreateEvent getEvent() {
