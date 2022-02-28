@@ -10,12 +10,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.channel.MessageChannel;
 
 public class TrackScheduler implements AudioLoadResultHandler {
     private final AudioPlayer player;
     private Queue<AudioTrack> scheduledList;
     private MessageCreateEvent event;
     private boolean isFromPlaylist;
+    private MessageChannel channel;
 
     public TrackScheduler(final AudioPlayer player) {
         this.player = player;
@@ -34,18 +36,31 @@ public class TrackScheduler implements AudioLoadResultHandler {
         System.out.println(track);
         // LavaPlayer found an audio source for us to play
         if (player.getPlayingTrack() == null) {
-            if(track != null) scheduledList.push(track);
+            System.out.println("entramos");
+            if (track != null) scheduledList.push(track);
             AudioTrack nowPlaying = scheduledList.pop();
-            if (!isFromPlaylist()) event.getMessage().getChannel().block()
-                    .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
-                    .block();
-            if(nowPlaying != null) player.playTrack(nowPlaying);
+            if (nowPlaying != null) {
+                try {
+                    event.getMessage().getChannel().block()
+                            .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
+                            .block();
+                    channel = event.getMessage().getChannel().block();
+                } catch (IllegalStateException e) {
+                    channel.createMessage("**Now Playing -> **" + nowPlaying.getInfo().title).subscribe();
+                }
+                System.out.println("reproducimos");
+                player.playTrack(nowPlaying);
+            } else {
+                System.out.println("no reproducimos");
+            }
         } else {
             System.out.println("added to queue");
-            if(!isFromPlaylist()) event.getMessage().getChannel().block()
-                    .createMessage("**" + track.getInfo().title + "--> Addeded to Queue in "
-                            + (scheduledList.getSize() + 1) + "º position")
-                    .block();
+            if (!isFromPlaylist()) {
+                event.getMessage().getChannel().block()
+                        .createMessage("**" + track.getInfo().title + " --> Addeded to Queue in "
+                                + (scheduledList.getSize() + 1) + "º position")
+                        .block();
+            }
             scheduledList.push(track);
         }
     }
@@ -86,13 +101,13 @@ public class TrackScheduler implements AudioLoadResultHandler {
     }
 
     public void showQueue() {
-        if(scheduledList.getSize() == 0) {
+        if (scheduledList.getSize() == 0) {
             event.getMessage().getChannel().block().createMessage("**There are not Items in Queue**").block();
         } else {
             StringBuilder sb = new StringBuilder();
             Node<AudioTrack> puntero = scheduledList.getFirstNode();
             sb.append("**Items left in Queue**\n");
-            for(int i = 0; i < scheduledList.getSize(); i++) {
+            for (int i = 0; i < scheduledList.getSize(); i++) {
                 sb.append((i + 1) + ")  ---> " + puntero.getContent().getInfo().title + "\n");
                 puntero = puntero.getNext();
             }
@@ -108,8 +123,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
         if (!player.isPaused()) {
             event.getMessage().getChannel().block().createMessage("**Paused**").block();
             player.setPaused(true);
-        }
-        else {
+        } else {
             event.getMessage().getChannel().block().createMessage("**Resumed**").block();
             player.setPaused(false);
         }

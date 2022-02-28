@@ -91,9 +91,9 @@ public class Main {
         commands.put("play", event -> {
             final String content = event.getMessage().getContent().toString();
             final List<String> command = Arrays.asList(content.split(" " ));
+            scheduler.setEvent(event);
             if (command.get(1).startsWith("https://www.youtube.com/watch?v=")) {
                 System.out.println(command.get(1).toString());
-                scheduler.setEvent(event);
                 playerManager.loadItem(command.get(1), scheduler);
             } else if(command.get(1).startsWith("https://www.youtube.com/playlist?list=")) {
                 String playlistId = command.get(1).split("list=")[1];
@@ -101,6 +101,7 @@ public class Main {
                 scheduler.setFromPlaylist(true);
                 event.getMessage().getChannel().block().createMessage("**Now Scheduling **" + command.get(1)).block();
                 for(int i = 0; i < playlist.size(); i++) {
+                    scheduler.setEvent(event);
                     playerManager.loadItem("https://www.youtube.com/watch?v=" +
                             playlist.get(i).getSnippet().getResourceId().getVideoId(), scheduler);
                     try {
