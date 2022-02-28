@@ -39,4 +39,8 @@ All commands begin with a prefix (in properties file), which will not be shown w
 For creating the .exe file (make sure the bot works fine by testing first in your IDE), you have to do a Maven install command. In IntelliJ for example, you have to go to the right contextual Maven menu, go to lifeCycle, intall. This step will create a target folder with the bot.exe file.
 For stopping the bot, you have to go to your task manager and kill Java Platform SE Binary process.
 If this feature doesn't work, just wait for this to be solved in following releases, you can still using the bot by executing it in your IDE.
+
+## Coming Soon...
+* Make the bot to be able to add YT playlist to Queue.
+* If you want more features pls tell me and help to make this bot better!
     
