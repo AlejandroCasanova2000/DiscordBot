@@ -97,6 +97,12 @@ public class TrackScheduler implements AudioLoadResultHandler {
     }
 
     private void sendMessage(String message) {
+        /*
+         * Sometimes, for one reason the getChannel().block() method gets stucked,
+         * for solving this, we have the channel attb, if the block method gets stucked
+         * (IllegalStateException), we send the message by the channel.
+         * If it doesn't get stucked, we update the attb channel.
+         */
         try {
             event.getMessage().getChannel().block()
                     .createMessage(message)
@@ -109,7 +115,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
 
     public void showQueue() {
         if (scheduledList.getSize() == 0) {
-            event.getMessage().getChannel().block().createMessage("**There are not Items in Queue**").block();
+            sendMessage("**There are not Items in Queue**");
         } else {
             StringBuilder sb = new StringBuilder();
             Node<AudioTrack> puntero = scheduledList.getFirstNode();
@@ -118,20 +124,21 @@ public class TrackScheduler implements AudioLoadResultHandler {
                 sb.append((i + 1) + ")  ---> " + puntero.getContent().getInfo().title + "\n");
                 puntero = puntero.getNext();
             }
-            event.getMessage().getChannel().block().createMessage(sb.toString()).block();
+            sendMessage(sb.toString());
         }
     }
 
     public void clearQueue() {
         scheduledList = new Queue<AudioTrack>();
+        sendMessage("**Queue cleared!!!**");
     }
 
     public void pause() {
         if (!player.isPaused()) {
-            event.getMessage().getChannel().block().createMessage("**Paused**").block();
+            sendMessage("**Paused**");
             player.setPaused(true);
         } else {
-            event.getMessage().getChannel().block().createMessage("**Resumed**").block();
+            sendMessage("**Resumed**");
             player.setPaused(false);
         }
     }
