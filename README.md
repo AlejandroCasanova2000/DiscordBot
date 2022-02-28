@@ -42,5 +42,6 @@ If this feature doesn't work, just wait for this to be solved in following relea
 
 ## Coming Soon...
 * Make the bot to be able to add YT playlist to Queue.
+* Make the bot to be able to add Spotify songs/playlists to Queue.
 * If you want more features pls tell me and help to make this bot better!
     
