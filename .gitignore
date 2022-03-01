@@ -1,1 +1,4 @@
 /application.properties
+out
+target
+.idea
