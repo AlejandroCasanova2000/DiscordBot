@@ -23,11 +23,11 @@ All commands begin with a prefix (in properties file), which will not be shown w
 
 * `join` - This command is for making the bot enter in your voice channel (REMEMBER JOIN YOUR BOT TO THE CHANNEl) 
 
-* `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now
+* `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now. For playing playlist, simply type !play [playlistUrl] and the bot will add the entire playlist to the queue.
 
 * `queue` - Shows the list of songs in queue
 
-* `pause` - Pause the song or resume it if its paused already
+* `pause` - Pause the song or resume it if it's paused already
 
 * `ping` - This command is for testing the bot. When you type this command, the bot answer. !ping  BOT: Pong!
 

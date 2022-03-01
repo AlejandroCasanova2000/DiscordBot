@@ -10,11 +10,14 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import discord4j.core.event.domain.message.MessageCreateEvent;
+import discord4j.core.object.entity.channel.MessageChannel;
 
 public class TrackScheduler implements AudioLoadResultHandler {
     private final AudioPlayer player;
     private Queue<AudioTrack> scheduledList;
     private MessageCreateEvent event;
+    private boolean isFromPlaylist;
+    private MessageChannel channel;
 
     public TrackScheduler(final AudioPlayer player) {
         this.player = player;
@@ -25,6 +28,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
             }
         });
         this.scheduledList = new Queue<AudioTrack>();
+        this.isFromPlaylist = false;
     }
 
     @Override
@@ -32,18 +36,24 @@ public class TrackScheduler implements AudioLoadResultHandler {
         System.out.println(track);
         // LavaPlayer found an audio source for us to play
         if (player.getPlayingTrack() == null) {
-            if(track != null) scheduledList.push(track);
+            System.out.println("entramos");
+            if (track != null) scheduledList.push(track);
             AudioTrack nowPlaying = scheduledList.pop();
-            event.getMessage().getChannel().block()
-                    .createMessage("**Now Playing -> **" + nowPlaying.getInfo().title)
-                    .block();
-            if(nowPlaying != null) player.playTrack(nowPlaying);
+            if (nowPlaying != null) {
+                sendMessage("**Now Playing -> **" + nowPlaying.getInfo().title);
+                System.out.println("reproducimos");
+                player.playTrack(nowPlaying);
+            } else {
+                System.out.println("no reproducimos");
+            }
         } else {
             System.out.println("added to queue");
-            event.getMessage().getChannel().block()
-                    .createMessage("**" + track.getInfo().title + "--> Addeded to Queue in "
-                            + (scheduledList.getSize() + 1) + "º position")
-                    .block();
+            if (!isFromPlaylist()) {
+                event.getMessage().getChannel().block()
+                        .createMessage("**" + track.getInfo().title + " --> Addeded to Queue in "
+                                + (scheduledList.getSize() + 1) + "º position")
+                        .block();
+            }
             scheduledList.push(track);
         }
     }
@@ -63,6 +73,14 @@ public class TrackScheduler implements AudioLoadResultHandler {
         // LavaPlayer could not parse an audio source for some reason
     }
 
+    public boolean isFromPlaylist() {
+        return isFromPlaylist;
+    }
+
+    public void setFromPlaylist(boolean fromPlaylist) {
+        isFromPlaylist = fromPlaylist;
+    }
+
     public MessageCreateEvent getEvent() {
         return event;
     }
@@ -72,35 +90,55 @@ public class TrackScheduler implements AudioLoadResultHandler {
     }
 
     public void skip() {
-        player.stopTrack();
+        if (scheduledList.getSize() > 0) player.stopTrack();
+        else {
+            sendMessage("**No Songs in Queue**");
+        }
+    }
+
+    private void sendMessage(String message) {
+        /*
+         * Sometimes, for one reason the getChannel().block() method gets stucked,
+         * for solving this, we have the channel attb, if the block method gets stucked
+         * (IllegalStateException), we send the message by the channel.
+         * If it doesn't get stucked, we update the attb channel.
+         */
+        try {
+            event.getMessage().getChannel().block()
+                    .createMessage(message)
+                    .block();
+            channel = event.getMessage().getChannel().block();
+        } catch (IllegalStateException e) {
+            channel.createMessage(message).subscribe();
+        }
     }
 
     public void showQueue() {
-        if(scheduledList.getSize() == 0) {
-            event.getMessage().getChannel().block().createMessage("**There are not Items in Queue**").block();
+        if (scheduledList.getSize() == 0) {
+            sendMessage("**There are not Items in Queue**");
         } else {
             StringBuilder sb = new StringBuilder();
             Node<AudioTrack> puntero = scheduledList.getFirstNode();
             sb.append("**Items left in Queue**\n");
-            for(int i = 0; i < scheduledList.getSize(); i++) {
+            for (int i = 0; i < scheduledList.getSize(); i++) {
                 sb.append((i + 1) + ")  ---> " + puntero.getContent().getInfo().title + "\n");
                 puntero = puntero.getNext();
             }
-            event.getMessage().getChannel().block().createMessage(sb.toString()).block();
+            sendMessage(sb.toString());
         }
     }
 
     public void clearQueue() {
         scheduledList = new Queue<AudioTrack>();
+        sendMessage("**Queue cleared!!!**");
     }
 
     public void pause() {
         if (!player.isPaused()) {
-            event.getMessage().getChannel().block().createMessage("**Paused**").block();
+            sendMessage("**Paused**");
             player.setPaused(true);
-        }
-        else {
-            event.getMessage().getChannel().block().createMessage("**Resumed**").block();
+        } else {
+            sendMessage("**Resumed**");
             player.setPaused(false);
         }
     }

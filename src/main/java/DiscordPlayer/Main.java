@@ -1,5 +1,6 @@
 package DiscordPlayer;
 
+import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.SearchResult;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -18,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Main {
@@ -89,10 +91,26 @@ public class Main {
         commands.put("play", event -> {
             final String content = event.getMessage().getContent().toString();
             final List<String> command = Arrays.asList(content.split(" " ));
+            scheduler.setEvent(event);
             if (command.get(1).startsWith("https://www.youtube.com/watch?v=")) {
                 System.out.println(command.get(1).toString());
-                scheduler.setEvent(event);
                 playerManager.loadItem(command.get(1), scheduler);
+            } else if(command.get(1).startsWith("https://www.youtube.com/playlist?list=")) {
+                String playlistId = command.get(1).split("list=")[1];
+                List<PlaylistItem> playlist = YoutubeSearch.getVideosFromPlaylist(playlistId);
+                scheduler.setFromPlaylist(true);
+                event.getMessage().getChannel().block().createMessage("**Now Scheduling **" + command.get(1)).block();
+                for(int i = 0; i < playlist.size(); i++) {
+                    scheduler.setEvent(event);
+                    playerManager.loadItem("https://www.youtube.com/watch?v=" +
+                            playlist.get(i).getSnippet().getResourceId().getVideoId(), scheduler);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                scheduler.setFromPlaylist(false);
             } else {
                 String url = "https://www.youtube.com/watch?v=";
                 StringBuilder sb = new StringBuilder();
@@ -107,12 +125,15 @@ public class Main {
             }
         });
         commands.put("skip", event -> {
+            scheduler.setEvent(event);
             scheduler.skip();
         });
         commands.put("queue", event -> {
+            scheduler.setEvent(event);
             scheduler.showQueue();
         });
         commands.put("clear", event -> {
+            scheduler.setEvent(event);
             scheduler.clearQueue();
         });
         commands.put("ping", event -> event.getMessage().getChannel().block().createMessage("Pong!").block());
