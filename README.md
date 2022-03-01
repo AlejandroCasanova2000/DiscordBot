@@ -41,7 +41,6 @@ For stopping the bot, you have to go to your task manager and kill Java Platform
 If this feature doesn't work, just wait for this to be solved in following releases, you can still using the bot by executing it in your IDE.
 
 ## Coming Soon...
-* Make the bot to be able to add YT playlist to Queue.
 * Make the bot to be able to add Spotify songs/playlists to Queue.
 * If you want more features pls tell me and help to make this bot better!
     
