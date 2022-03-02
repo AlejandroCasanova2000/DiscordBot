@@ -20,6 +20,17 @@
         </repository>
     </repositories>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20211205</version>
+        </dependency>
+        <dependency>
+            <groupId>se.michaelthelin.spotify</groupId>
+            <artifactId>spotify-web-api-java</artifactId>
+            <version>7.0.0</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-youtube -->
         <dependency>
             <groupId>com.google.apis</groupId>
