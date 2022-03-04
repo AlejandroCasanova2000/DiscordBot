@@ -23,7 +23,11 @@ All commands begin with a prefix (in properties file), which will not be shown w
 
 * `join` - This command is for making the bot enter in your voice channel (REMEMBER JOIN YOUR BOT TO THE CHANNEl) 
 
-* `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now. For playing playlist, simply type !play [playlistUrl] and the bot will add the entire playlist to the queue.
+* `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now.
+
+* `play [YT Playlist]` -  For playing YT playlist, simply type !play https://www.youtube.com/playlist?list=... and the bot will add the entire playlist to the queue
+
+* `play [Spotify Playlist]` - For playing Spotify playlist, invoke play command like !play https://open.spotify.com/playlist/... and bot will schedule the songs into queue
 
 * `queue` - Shows the list of songs in queue
 
@@ -41,7 +45,5 @@ For stopping the bot, you have to go to your task manager and kill Java Platform
 If this feature doesn't work, just wait for this to be solved in following releases, you can still using the bot by executing it in your IDE.
 
 ## Coming Soon...
-* Make the bot to be able to add YT playlist to Queue.
-* Make the bot to be able to add Spotify songs/playlists to Queue.
 * If you want more features pls tell me and help to make this bot better!
     
