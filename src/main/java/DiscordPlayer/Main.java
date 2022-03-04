@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.*;
 
 public class Main {
+    private static boolean joined = false;
     private static final Map<String, Command> commands = new HashMap<String, Command>();
     static final AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
     static final AudioPlayer player = playerManager.createPlayer();
@@ -57,6 +58,7 @@ public class Main {
                         // join returns a VoiceConnection which would be required if we were
                         // adding disconnection features, but for now we are just ignoring it.
                         channel.join(spec -> spec.setProvider(provider)).block();
+                        joined = true;
                     }
                 }
             }
@@ -89,6 +91,9 @@ public class Main {
 
     static {
         commands.put("play", event -> {
+            if (!joined) {
+                commands.get("join").execute(event);
+            }
             final String content = event.getMessage().getContent().toString();
             final List<String> command = Arrays.asList(content.split(" " ));
             scheduler.setEvent(event);
@@ -162,6 +167,17 @@ public class Main {
         commands.put("pause", event -> {
             scheduler.setEvent(event);
             scheduler.pause();
+        });
+        commands.put("loop", event -> {
+            scheduler.setEvent(event);
+            if (scheduler.isLoop()) {
+                scheduler.setLoop(false);
+                event.getMessage().getChannel().block().createMessage("**Continuing with queue...**").block();
+            } else {
+                event.getMessage().getChannel().block().createMessage("**Now playing in loop -> **" +
+                        scheduler.getPlayer().getPlayingTrack().getInfo().title).block();
+                scheduler.setLoop(true);
+            }
         });
     }
 }

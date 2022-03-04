@@ -14,10 +14,12 @@ import discord4j.core.object.entity.channel.MessageChannel;
 
 public class TrackScheduler implements AudioLoadResultHandler {
     private final AudioPlayer player;
+    private boolean loop;
     private Queue<AudioTrack> scheduledList;
     private MessageCreateEvent event;
     private boolean isFromPlaylist;
     private MessageChannel channel;
+    private AudioTrack lastPlayed;
 
     public TrackScheduler(final AudioPlayer player) {
         this.player = player;
@@ -29,6 +31,7 @@ public class TrackScheduler implements AudioLoadResultHandler {
         });
         this.scheduledList = new Queue<AudioTrack>();
         this.isFromPlaylist = false;
+        this.loop = false;
     }
 
     @Override
@@ -38,10 +41,16 @@ public class TrackScheduler implements AudioLoadResultHandler {
         if (player.getPlayingTrack() == null) {
             System.out.println("entramos");
             if (track != null) scheduledList.push(track);
-            AudioTrack nowPlaying = scheduledList.pop();
+            AudioTrack nowPlaying;
+            if (!isLoop()) {
+                nowPlaying = scheduledList.pop();
+            } else {
+                nowPlaying = lastPlayed;
+            }
             if (nowPlaying != null) {
                 sendMessage("**Now Playing -> **" + nowPlaying.getInfo().title);
                 System.out.println("reproducimos");
+                lastPlayed = nowPlaying.makeClone();
                 player.playTrack(nowPlaying);
             } else {
                 System.out.println("no reproducimos");
@@ -89,8 +98,20 @@ public class TrackScheduler implements AudioLoadResultHandler {
         this.event = event;
     }
 
+    public AudioPlayer getPlayer() {
+        return player;
+    }
+
+    public boolean isLoop() {
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        this.loop = loop;
+    }
+
     public void skip() {
-        if (scheduledList.getSize() > 0) player.stopTrack();
+        if (scheduledList.getSize() > 0 || isLoop()) player.stopTrack();
         else {
             sendMessage("**No Songs in Queue**");
         }
