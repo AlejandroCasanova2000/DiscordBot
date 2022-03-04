@@ -14,6 +14,8 @@ import discord4j.core.object.VoiceState;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.voice.AudioProvider;
+import org.apache.hc.core5.http.ParseException;
+import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -111,6 +113,28 @@ public class Main {
                     }
                 }
                 scheduler.setFromPlaylist(false);
+            } else if(command.get(1).startsWith("https://open.spotify.com/playlist/")) {
+                String playlistURL = command.get(1).split("playlist/")[1];
+                playlistURL = playlistURL.replace("?", "&&").split("&&")[0];
+                try {
+                    List<String> tracks = SpotifySearch.getPlaylistTrackNames(playlistURL);
+                    event.getMessage().getChannel().block().createMessage("**Now Scheduling **" + command.get(1)).block();
+                    scheduler.setFromPlaylist(true);
+                    for (String track : tracks) {
+                        String url = "https://www.youtube.com/watch?v=";
+                        SearchResult result = YoutubeSearch.getVideoInfo(track);
+                        playerManager.loadItem(url + result.getId().getVideoId(), scheduler);
+                        Thread.sleep(10);
+                    }
+                    Thread.sleep(500);
+                    scheduler.setFromPlaylist(false);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (SpotifyWebApiException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
                 String url = "https://www.youtube.com/watch?v=";
                 StringBuilder sb = new StringBuilder();
