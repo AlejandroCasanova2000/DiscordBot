@@ -7,11 +7,13 @@ This project is a bot for Discord, written using Java, the [Discord4J](https://g
 This Bot is designed package in a .exe file, to start one Discord bot. 
 
 ## Installation
-Firs Download the code and add it to your Java IDE. Next you have to create a Discord application in https://discord.com/developers/applications, and get a youtube API token for YouTube data in https://console.cloud.google.com/apis/dashboard (The mencioned YT API is YouTube Data API v3). The next step is creating an aplication.properties file in the root folder of the project. 
+Firs Download the code and add it to your Java IDE. Next you have to create a Discord application in https://discord.com/developers/applications, and get a youtube API token for YouTube data in https://console.cloud.google.com/apis/dashboard (The mencioned YT API is YouTube Data API v3). Also you have to create a Spotify app for play Spotify songs at https://developer.spotify.com/dashboard/applications. The next step is creating an aplication.properties file in the root folder of the project. 
 The properties file needs to have the following properties:
 * discordToken=yourDiscordBotToken
 * youtubeToken=YourGoogleApiKeys
 * prefix=desiredPrefix(example: prefix=!)
+* spotifyID=clientIDofSpotifyApp
+* spotifySecret=clientSecretOfSpotifyApp
 
 Don't forget to invite the bot to your channel, you can do this in Discord Developer Portal -> Your Application -> Oauth2
 
