@@ -154,12 +154,12 @@ public class TrackScheduler implements AudioLoadResultHandler {
         sendMessage("**Queue cleared!!!**");
     }
 
-    public void pause() {
+    public void pause(boolean isForDisconnect) {
         if (!player.isPaused()) {
-            sendMessage("**Paused**");
+            if (!isForDisconnect) sendMessage("**Paused**");
             player.setPaused(true);
         } else {
-            sendMessage("**Resumed**");
+            if (!isForDisconnect) sendMessage("**Resumed**");
             player.setPaused(false);
         }
     }

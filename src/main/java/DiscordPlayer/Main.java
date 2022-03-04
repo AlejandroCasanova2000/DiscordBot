@@ -12,6 +12,7 @@ import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.VoiceState;
 import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.voice.AudioProvider;
 import org.apache.hc.core5.http.ParseException;
@@ -59,6 +60,9 @@ public class Main {
                         // adding disconnection features, but for now we are just ignoring it.
                         channel.join(spec -> spec.setProvider(provider)).block();
                         joined = true;
+                        if (scheduler.getPlayer().getPlayingTrack() != null) {
+                            scheduler.pause(true);
+                        }
                     }
                 }
             }
@@ -166,7 +170,7 @@ public class Main {
         commands.put("ping", event -> event.getMessage().getChannel().block().createMessage("Pong!").block());
         commands.put("pause", event -> {
             scheduler.setEvent(event);
-            scheduler.pause();
+            scheduler.pause(false);
         });
         commands.put("loop", event -> {
             scheduler.setEvent(event);
@@ -178,6 +182,12 @@ public class Main {
                         scheduler.getPlayer().getPlayingTrack().getInfo().title).block();
                 scheduler.setLoop(true);
             }
+        });
+        commands.put("disconnect", event -> {
+            VoiceChannel channel = event.getMember().orElse(null).getVoiceState().block().getChannel().block();
+            scheduler.pause(true);
+            joined = false;
+            channel.sendDisconnectVoiceState().block();
         });
     }
 }

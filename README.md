@@ -21,8 +21,6 @@ This Bot contains some commands, most of which should be quite intuitive to the 
 
 All commands begin with a prefix (in properties file), which will not be shown with all the following commands, as it can be configured by users.
 
-* `join` - This command is for making the bot enter in your voice channel (REMEMBER JOIN YOUR BOT TO THE CHANNEl) 
-
 * `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now.
 
 * `play [YT Playlist]` -  For playing YT playlist, simply type !play https://www.youtube.com/playlist?list=... and the bot will add the entire playlist to the queue
@@ -38,6 +36,12 @@ All commands begin with a prefix (in properties file), which will not be shown w
 * `skip` - If a song is playing, the bot will skip it and play the next song in the queue.
 
 * `clear` - Clear the queue
+
+* `loop` - The bot starts playing in loop the current song (skip command will play the same song). If you invoke loop and it was activated, it gets false and continue with queue.
+
+* `disconnect` - The bot leaves the voice channel (it pauses the song)
+
+* `join` - This command is for making the bot enter in your voice channel once it was disconnected by the above command (and resumes the last song)
 
 ## Creating .exe File to execute the bot (May not Work in the release)
 For creating the .exe file (make sure the bot works fine by testing first in your IDE), you have to do a Maven install command. In IntelliJ for example, you have to go to the right contextual Maven menu, go to lifeCycle, intall. This step will create a target folder with the bot.exe file.
