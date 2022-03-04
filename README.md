@@ -10,7 +10,7 @@ This Bot is designed package in a .exe file, to start one Discord bot.
 Firs Download the code and add it to your Java IDE. Next you have to create a Discord application in https://discord.com/developers/applications, and get a youtube API token for YouTube data in https://console.cloud.google.com/apis/dashboard (The mencioned YT API is YouTube Data API v3). The next step is creating an aplication.properties file in the root folder of the project. 
 The properties file needs to have the following properties:
 * discordToken=yourDiscordBotToken
-* youtubeToken=YoutGoogleApiKeys
+* youtubeToken=YourGoogleApiKeys
 * prefix=desiredPrefix(example: prefix=!)
 
 Don't forget to invite the bot to your channel, you can do this in Discord Developer Portal -> Your Application -> Oauth2
@@ -21,9 +21,11 @@ This Bot contains some commands, most of which should be quite intuitive to the 
 
 All commands begin with a prefix (in properties file), which will not be shown with all the following commands, as it can be configured by users.
 
-* `join` - This command is for making the bot enter in your voice channel (REMEMBER JOIN YOUR BOT TO THE CHANNEl) 
+* `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now.
 
-* `play` - Play a song or adds it to queue. Command can be invoked by play [url] or play [song name] Ex: !play https://wwww.youtube.com... or !play dont stop me now. For playing playlist, simply type !play [playlistUrl] and the bot will add the entire playlist to the queue.
+* `play [YT Playlist]` -  For playing YT playlist, simply type !play https://www.youtube.com/playlist?list=... and the bot will add the entire playlist to the queue
+
+* `play [Spotify Playlist]` - For playing Spotify playlist, invoke play command like !play https://open.spotify.com/playlist/... and bot will schedule the songs into queue
 
 * `queue` - Shows the list of songs in queue
 
@@ -35,12 +37,17 @@ All commands begin with a prefix (in properties file), which will not be shown w
 
 * `clear` - Clear the queue
 
+* `loop` - The bot starts playing in loop the current song (skip command will play the same song). If you invoke loop and it was activated, it gets false and continue with queue.
+
+* `disconnect` - The bot leaves the voice channel (it pauses the song)
+
+* `join` - This command is for making the bot enter in your voice channel once it was disconnected by the above command (and resumes the last song)
+
 ## Creating .exe File to execute the bot (May not Work in the release)
 For creating the .exe file (make sure the bot works fine by testing first in your IDE), you have to do a Maven install command. In IntelliJ for example, you have to go to the right contextual Maven menu, go to lifeCycle, intall. This step will create a target folder with the bot.exe file.
 For stopping the bot, you have to go to your task manager and kill Java Platform SE Binary process.
 If this feature doesn't work, just wait for this to be solved in following releases, you can still using the bot by executing it in your IDE.
 
 ## Coming Soon...
-* Make the bot to be able to add Spotify songs/playlists to Queue.
 * If you want more features pls tell me and help to make this bot better!
     
